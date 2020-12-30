@@ -1,5 +1,6 @@
 class PrototypesController < ApplicationController
   def index
+    @prototypes = Prototype.all
   end
   
   def new 
@@ -8,7 +9,7 @@ class PrototypesController < ApplicationController
 
   def create 
     # Prototype.create(create_params)
-    @prototype = Prototype.new(create_params)
+    @prototype = Prototype.new(rototype_params)
     if @prototype.save
         redirect_to root_path
     else
@@ -17,10 +18,36 @@ class PrototypesController < ApplicationController
     
   end
 
+  def show 
+    @prototype = Prototype.find(params[:id])
+  end
+
+  def edit 
+    @prototype = Prototype.find(params[:id])
+  end
+
+  def update
+    prototype = Prototype.find(params[:id])
+    if  prototype.update(rototype_params)
+        redirect_to prototype_path(params[:id])
+    else
+        render :edit
+    end
+  end
+
+  def destroy
+    prototype = Prototype.find(params[:id])
+    if  prototype.destroy
+        redirect_to root_path
+    else
+        render :edit
+    end
+  end
+
   private
 
-  def create_params
-    params.require(:prototype).permit(:title, :cacth_copy, :concept, :image).merge(user_id: current_user.id)
+  def rototype_params
+    params.require(:prototype).permit(:title, :catch_copy, :concept, :image).merge(user_id: current_user.id)
   end
 
 end
