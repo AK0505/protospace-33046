@@ -9,7 +9,7 @@ class PrototypesController < ApplicationController
 
   def create 
     # Prototype.create(create_params)
-    @prototype = Prototype.new(rototype_params)
+    @prototype = Prototype.new(prototype_params)
     if @prototype.save
         redirect_to root_path
     else
@@ -20,6 +20,8 @@ class PrototypesController < ApplicationController
 
   def show 
     @prototype = Prototype.find(params[:id])
+    @comment = Comment.new
+    @comments = @prototype.comments.includes(:user)
   end
 
   def edit 
@@ -28,7 +30,7 @@ class PrototypesController < ApplicationController
 
   def update
     prototype = Prototype.find(params[:id])
-    if  prototype.update(rototype_params)
+    if  prototype.update(prototype_params)
         redirect_to prototype_path(params[:id])
     else
         render :edit
@@ -46,7 +48,7 @@ class PrototypesController < ApplicationController
 
   private
 
-  def rototype_params
+  def prototype_params
     params.require(:prototype).permit(:title, :catch_copy, :concept, :image).merge(user_id: current_user.id)
   end
 
