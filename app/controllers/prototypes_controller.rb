@@ -10,8 +10,21 @@ class PrototypesController < ApplicationController
     @prototype = Prototype.new
   end
 
-  def create 
-    # Prototype.create(create_params)
+  
+  def show 
+    @prototype = Prototype.find(params[:id])
+    @comment = Comment.new
+    @comments = @prototype.comments.includes(:user)
+  end
+  
+  def edit 
+    @prototype = Prototype.find(params[:id])
+    unless user_signed_in? && current_user.id == @prototype.user.id
+      redirect_to action: :index
+    end
+  end
+  
+  def create
     @prototype = Prototype.new(prototype_params)
     if @prototype.save
         redirect_to root_path
@@ -20,20 +33,6 @@ class PrototypesController < ApplicationController
     end
     
   end
-
-  def show 
-    @prototype = Prototype.find(params[:id])
-    @comment = Comment.new
-    @comments = @prototype.comments.includes(:user)
-  end
-
-  def edit 
-    @prototype = Prototype.find(params[:id])
-    unless user_signed_in? && current_user.id == @prototype.user.id
-      redirect_to action: :index
-    end
-  end
-
   def update
     prototype = Prototype.find(params[:id])
     if  prototype.update(prototype_params)
